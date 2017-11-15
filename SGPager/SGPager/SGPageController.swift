@@ -33,37 +33,31 @@ class SGPageController: UIPageViewController {
         currIndex = newIndex
     }
     
-    fileprivate func scrollToViewController(_ viewController: UIViewController, direction: UIPageViewControllerNavigationDirection = .forward)
-    {
+    fileprivate func scrollToViewController(_ viewController: UIViewController, direction: UIPageViewControllerNavigationDirection = .forward) {
         setViewControllers([viewController], direction: direction, animated: true, completion: nil)
     }
     
-
     private(set) lazy var orderedViewControllers: [UIViewController] = {
         return [UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "pageOne"),
                 UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "pageTwo"),
                 UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "pageThree")]
     }()
-
 }
 
 extension SGPageController: UIPageViewControllerDelegate {
     
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool)
     {
-        if let firstViewController = viewControllers?.first, let index = orderedViewControllers.index(of: firstViewController)
-        {
+        if let firstViewController = viewControllers?.first, let index = orderedViewControllers.index(of: firstViewController) {
             let dict = ["index" : index]
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "SGPageIndex"), object: nil, userInfo: dict)
         }
     }
-    
 }
 
 extension SGPageController: UIPageViewControllerDataSource {
     
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController?
-    {
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         guard let viewControllerIndex = orderedViewControllers.index(of: viewController) else { return nil }
         
         let previousIndex = viewControllerIndex - 1
@@ -73,8 +67,8 @@ extension SGPageController: UIPageViewControllerDataSource {
         return orderedViewControllers[previousIndex]
     }
     
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController?
-    {
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+        
         guard let viewControllerIndex = orderedViewControllers.index(of: viewController) else { return nil }
         
         let nextIndex = viewControllerIndex + 1
@@ -84,5 +78,4 @@ extension SGPageController: UIPageViewControllerDataSource {
         
         return orderedViewControllers[nextIndex]
     }
-    
 }
